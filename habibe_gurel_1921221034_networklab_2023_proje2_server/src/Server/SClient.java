@@ -22,10 +22,6 @@ import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- *
- * @author INSECT
- */
 public class SClient {
 
     int id;
@@ -39,7 +35,7 @@ public class SClient {
     PairingThread pairThread;
     //rakip client
     SClient receiver;
-    String availableRoom;
+    String availableRoom="";
     //eşleşme durumu
     public boolean paired = false;
     public int control = 1;
@@ -223,32 +219,11 @@ public class SClient {
                         SClient crival = null;
                         //eşleşme sağlanana kadar dön
                         while (crival == null && TheClient.soket.isConnected()) {
-                            //liste içerisinde eş arıyor
-//                            for (SClient clnt : Server.Clients) {
-//                                if (TheClient != clnt && clnt.rival == null) {
-//                                    //eşleşme sağlandı ve gerekli işaretlemeler yapıldı
-//                                    crival = clnt;
-//                                    crival.paired = true;
-//                                   // crival.rival = TheClient;
-//                                    TheClient.rival = crival;
-//                                    TheClient.paired = true;
-//                                    break;
-//                                }
-//                            }
                             //sürekli dönmesin 1 saniyede bir dönsün
                             //thredi uyutuyoruz
                             sleep(1000);
                         }
-                        //eşleşme oldu
-                        //her iki tarafada eşleşme mesajı gönder 
-                        //oyunu başlat
-//                        Message msg1 = new Message(Message.Message_Type.RivalConnected);
-//                        msg1.content = TheClient.name;
-//                        Server.Send(TheClient.rival, msg1);
-//
-//                        Message msg2 = new Message(Message.Message_Type.RivalConnected);
-//                        msg2.content = TheClient.rival.name;
-//                        Server.Send(TheClient, msg2);
+                       
                     }
                     //lock mekanizmasını servest bırak
                     //bırakılmazsa deadlock olur.

@@ -53,6 +53,12 @@ public class Login extends javax.swing.JFrame {
         btn_login.setFont(new java.awt.Font("Segoe UI", 1, 20)); // NOI18N
         btn_login.setForeground(new java.awt.Color(0, 0, 0));
         btn_login.setText("LOG IN");
+        btn_login.setEnabled(false);
+        btn_login.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btn_loginMouseEntered(evt);
+            }
+        });
         btn_login.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btn_loginActionPerformed(evt);
@@ -127,6 +133,15 @@ public class Login extends javax.swing.JFrame {
             
         }
     }//GEN-LAST:event_btn_loginActionPerformed
+
+    private void btn_loginMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_loginMouseEntered
+        // TODO add your handling code here:
+        if (txt_username.getText().isEmpty()) {
+            btn_login.setEnabled(false);
+        }else{
+            btn_login.setEnabled(true);
+        }
+    }//GEN-LAST:event_btn_loginMouseEntered
 
     /**
      * @param args the command line arguments

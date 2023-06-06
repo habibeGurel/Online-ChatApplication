@@ -25,10 +25,6 @@ import java.util.concurrent.Semaphore;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- *
- * @author INSECT
- */
 //client gelişini dinleme threadi
 class ServerThread extends Thread {
 

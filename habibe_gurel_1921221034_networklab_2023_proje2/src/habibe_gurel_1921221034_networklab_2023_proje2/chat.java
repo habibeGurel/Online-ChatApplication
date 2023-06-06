@@ -7,6 +7,9 @@ package habibe_gurel_1921221034_networklab_2023_proje2;
 import Client.Client;
 import Message.Message;
 import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
 import java.util.ArrayList;
 import javax.swing.DefaultListModel;
 import javax.swing.JFileChooser;
@@ -25,7 +28,7 @@ public class chat extends javax.swing.JFrame {
     public DefaultListModel roomListModel = new DefaultListModel();
     public static chat mychat;
     public int control = 1;
-    public String senderPerson ="";
+    public String senderPerson = "";
     public static ArrayList<String> messageArr = new ArrayList<>();
 
     public chat() {
@@ -67,7 +70,7 @@ public class chat extends javax.swing.JFrame {
         jScrollPane3 = new javax.swing.JScrollPane();
         list_rooms = new javax.swing.JList<>();
         btn_joinRoom = new javax.swing.JButton();
-        jPanel1 = new javax.swing.JPanel();
+        pnl_roomChat = new javax.swing.JPanel();
         jScrollPane4 = new javax.swing.JScrollPane();
         txtArea_roomMessages = new javax.swing.JTextArea();
         txt_roomMessage = new javax.swing.JTextField();
@@ -86,10 +89,12 @@ public class chat extends javax.swing.JFrame {
 
         txtArea_chat.setEditable(false);
         txtArea_chat.setColumns(20);
+        txtArea_chat.setFont(new java.awt.Font("Segoe UI", 0, 20)); // NOI18N
         txtArea_chat.setRows(5);
+        txtArea_chat.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         jScrollPane1.setViewportView(txtArea_chat);
 
-        txtField_message.setFont(new java.awt.Font("Segoe UI", 0, 17)); // NOI18N
+        txtField_message.setFont(new java.awt.Font("Segoe UI", 0, 20)); // NOI18N
         txtField_message.setForeground(new java.awt.Color(153, 153, 153));
         txtField_message.setText("Enter message here...");
         txtField_message.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -115,7 +120,7 @@ public class chat extends javax.swing.JFrame {
             }
         });
 
-        lbl_person.setFont(new java.awt.Font("Segoe UI", 0, 20)); // NOI18N
+        lbl_person.setFont(new java.awt.Font("Segoe UI", 1, 20)); // NOI18N
 
         lbl_personicon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/habibe_gurel_1921221034_networklab_2023_proje2/icons/person.png"))); // NOI18N
 
@@ -164,13 +169,22 @@ public class chat extends javax.swing.JFrame {
         lbl_me.setIcon(new javax.swing.ImageIcon(getClass().getResource("/habibe_gurel_1921221034_networklab_2023_proje2/icons/person.png"))); // NOI18N
         lbl_me.setText("ME :");
 
-        lbl_myname.setFont(new java.awt.Font("Segoe UI", 0, 20)); // NOI18N
+        lbl_myname.setFont(new java.awt.Font("Segoe UI", 1, 20)); // NOI18N
 
         pnl_otherPeople.setBackground(new java.awt.Color(0, 102, 153));
 
+        list_people.setFont(new java.awt.Font("Segoe UI", 0, 20)); // NOI18N
+        list_people.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                list_peopleValueChanged(evt);
+            }
+        });
         jScrollPane2.setViewportView(list_people);
 
+        btn_startChatting.setFont(new java.awt.Font("Segoe UI", 1, 20)); // NOI18N
+        btn_startChatting.setForeground(new java.awt.Color(0, 0, 0));
         btn_startChatting.setText("START CHATTING");
+        btn_startChatting.setEnabled(false);
         btn_startChatting.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btn_startChattingActionPerformed(evt);
@@ -191,7 +205,7 @@ public class chat extends javax.swing.JFrame {
             pnl_otherPeopleLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnl_otherPeopleLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 498, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 506, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btn_startChatting, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -230,7 +244,14 @@ public class chat extends javax.swing.JFrame {
         txt_roomName.setFont(new java.awt.Font("Segoe UI", 0, 20)); // NOI18N
 
         btn_createRoom.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        btn_createRoom.setForeground(new java.awt.Color(0, 0, 0));
         btn_createRoom.setText("CREATE ROOM");
+        btn_createRoom.setEnabled(false);
+        btn_createRoom.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btn_createRoomMouseEntered(evt);
+            }
+        });
         btn_createRoom.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btn_createRoomActionPerformed(evt);
@@ -240,9 +261,18 @@ public class chat extends javax.swing.JFrame {
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 17)); // NOI18N
         jLabel1.setText("ENTER A ROOM NAME :");
 
+        list_rooms.setFont(new java.awt.Font("Segoe UI", 0, 20)); // NOI18N
+        list_rooms.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                list_roomsValueChanged(evt);
+            }
+        });
         jScrollPane3.setViewportView(list_rooms);
 
+        btn_joinRoom.setFont(new java.awt.Font("Segoe UI", 1, 20)); // NOI18N
+        btn_joinRoom.setForeground(new java.awt.Color(0, 0, 0));
         btn_joinRoom.setText("JOIN ROOM");
+        btn_joinRoom.setEnabled(false);
         btn_joinRoom.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btn_joinRoomActionPerformed(evt);
@@ -273,7 +303,7 @@ public class chat extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(pnl_roomsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(txt_roomName, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 58, Short.MAX_VALUE)
+                    .addComponent(txt_roomName, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 66, Short.MAX_VALUE)
                     .addComponent(btn_createRoom, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 503, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -284,12 +314,24 @@ public class chat extends javax.swing.JFrame {
 
         tabbedPane_chat.addTab("ROOMS", pnl_rooms);
 
-        jPanel1.setBackground(new java.awt.Color(0, 102, 153));
+        pnl_roomChat.setBackground(new java.awt.Color(0, 102, 153));
 
+        txtArea_roomMessages.setEditable(false);
         txtArea_roomMessages.setColumns(20);
+        txtArea_roomMessages.setFont(new java.awt.Font("Segoe UI", 0, 20)); // NOI18N
         txtArea_roomMessages.setRows(5);
         jScrollPane4.setViewportView(txtArea_roomMessages);
 
+        txt_roomMessage.setFont(new java.awt.Font("Segoe UI", 0, 20)); // NOI18N
+        txt_roomMessage.setForeground(new java.awt.Color(153, 153, 153));
+        txt_roomMessage.setText("Enter message here...");
+        txt_roomMessage.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                txt_roomMessageMousePressed(evt);
+            }
+        });
+
+        btn_roomSend.setBackground(new java.awt.Color(0, 102, 153));
         btn_roomSend.setIcon(new javax.swing.ImageIcon(getClass().getResource("/habibe_gurel_1921221034_networklab_2023_proje2/icons/Send.png"))); // NOI18N
         btn_roomSend.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -297,6 +339,7 @@ public class chat extends javax.swing.JFrame {
             }
         });
 
+        btn_roomDocument.setBackground(new java.awt.Color(0, 102, 153));
         btn_roomDocument.setIcon(new javax.swing.ImageIcon(getClass().getResource("/habibe_gurel_1921221034_networklab_2023_proje2/icons/file.png"))); // NOI18N
         btn_roomDocument.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -304,46 +347,50 @@ public class chat extends javax.swing.JFrame {
             }
         });
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+        jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/habibe_gurel_1921221034_networklab_2023_proje2/icons/people.png"))); // NOI18N
+
+        lbl_roomsName.setFont(new java.awt.Font("Segoe UI", 1, 20)); // NOI18N
+
+        javax.swing.GroupLayout pnl_roomChatLayout = new javax.swing.GroupLayout(pnl_roomChat);
+        pnl_roomChat.setLayout(pnl_roomChatLayout);
+        pnl_roomChatLayout.setHorizontalGroup(
+            pnl_roomChatLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnl_roomChatLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 642, Short.MAX_VALUE)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(btn_roomDocument)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txt_roomMessage)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(btn_roomSend, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(lbl_roomsName, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                        .addContainerGap())))
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lbl_roomsName, javax.swing.GroupLayout.DEFAULT_SIZE, 47, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 515, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(btn_roomSend, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txt_roomMessage)
-                    .addComponent(btn_roomDocument, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(pnl_roomChatLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 636, Short.MAX_VALUE)
+                    .addGroup(pnl_roomChatLayout.createSequentialGroup()
+                        .addComponent(btn_roomDocument, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txt_roomMessage)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btn_roomSend, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(6, 6, 6))
+                    .addGroup(pnl_roomChatLayout.createSequentialGroup()
+                        .addComponent(jLabel2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lbl_roomsName, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap())
         );
+        pnl_roomChatLayout.setVerticalGroup(
+            pnl_roomChatLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnl_roomChatLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(pnl_roomChatLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lbl_roomsName, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 506, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(pnl_roomChatLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(pnl_roomChatLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(txt_roomMessage, javax.swing.GroupLayout.DEFAULT_SIZE, 56, Short.MAX_VALUE)
+                        .addComponent(btn_roomSend, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                    .addComponent(btn_roomDocument, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(20, 20, 20))
+        );
 
-        tabbedPane_chat.addTab("ROOM CHAT", jPanel1);
+        tabbedPane_chat.addTab("ROOM CHAT", pnl_roomChat);
 
         getContentPane().add(tabbedPane_chat, java.awt.BorderLayout.CENTER);
 
@@ -352,21 +399,19 @@ public class chat extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void txtField_messageMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtField_messageMousePressed
-        // TODO add your handling code here:
         txtField_message.setText("");
         txtField_message.setForeground(Color.black);
-
-
     }//GEN-LAST:event_txtField_messageMousePressed
 
     private void btn_documentsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_documentsActionPerformed
-        // TODO add your handling code here:
-        //JFileChooser fileChooser = new JFileChooser();
-        //int result = fileChooser.showOpenDialog(frame);
+        JFileChooser j = new JFileChooser("C:");
+        j.showSaveDialog(null);
+        File file = j.getSelectedFile();
+        System.out.println(file.getName());
+        
     }//GEN-LAST:event_btn_documentsActionPerformed
 
     private void btn_joinRoomActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_joinRoomActionPerformed
-        // TODO add your handling code here:
         tabbedPane_chat.setSelectedIndex(3);
         lbl_roomsName.setText(list_rooms.getSelectedValue());
         txtArea_roomMessages.setText("");
@@ -390,8 +435,8 @@ public class chat extends javax.swing.JFrame {
         tabbedPane_chat.setSelectedIndex(0);
         txtArea_chat.setText("");
         for (int i = 0; i < messageArr.size(); i++) {
-            if(i%2==0 && messageArr.get(i).equals(lbl_person.getText())){
-                txtArea_chat.setText(messageArr.get(i+1));
+            if (i % 2 == 0 && messageArr.get(i).equals(lbl_person.getText())) {
+                txtArea_chat.setText(messageArr.get(i + 1));
             }
         }
     }//GEN-LAST:event_btn_startChattingActionPerformed
@@ -405,14 +450,14 @@ public class chat extends javax.swing.JFrame {
         Message msg2 = new Message(Message.Message_Type.SendMessage);
         msg2.content = sendmsg;
         Client.Send(msg2);
-        
+
         int cnt = 0;//control
         for (int i = 0; i < messageArr.size(); i++) {
             if (i % 2 == 0 && messageArr.get(i).equals(lbl_person.getText())) {
                 String oldmsg = messageArr.get(i + 1);
                 oldmsg = oldmsg + sendmsg;
                 messageArr.set(i + 1, oldmsg);
-                txtArea_chat.setText(messageArr.get(i+1));
+                txtArea_chat.setText(messageArr.get(i + 1));
                 cnt = 1;//kisi var
             }
         }
@@ -421,14 +466,16 @@ public class chat extends javax.swing.JFrame {
             messageArr.add(sendmsg);
             txtArea_chat.setText(sendmsg);
         }
+        txtField_message.setText("Enter message here...");
+        txtField_message.setForeground(Color.gray);
     }//GEN-LAST:event_btn_sendActionPerformed
 
     private void btn_roomDocumentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_roomDocumentActionPerformed
-        // TODO add your handling code here:
+        JFileChooser j = new JFileChooser("C:");
+        j.showSaveDialog(null);
     }//GEN-LAST:event_btn_roomDocumentActionPerformed
 
     private void btn_roomSendActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_roomSendActionPerformed
-        // TODO add your handling code here:
         String sendmsg = lbl_myname.getText() + ":  " + txt_roomMessage.getText() + "\n";//kisi adi: mesaj
         Message msg = new Message(Message.Message_Type.SendRoomMessage);
         msg.content = lbl_roomsName.getText();//yollanacak oda
@@ -436,22 +483,33 @@ public class chat extends javax.swing.JFrame {
         Message msg2 = new Message(Message.Message_Type.SendRoomMessage);
         msg2.content = sendmsg;
         Client.Send(msg2);
-//        int cnt = 0;//control
-//        for (int i = 0; i < messageArr.size(); i++) {
-//            if (i % 2 == 0 && messageArr.get(i).equals(lbl_person.getText())) {
-//                String oldmsg = messageArr.get(i + 1);
-//                oldmsg = oldmsg + sendmsg;
-//                messageArr.set(i + 1, oldmsg);
-//                txtArea_chat.setText(messageArr.get(i+1));
-//                cnt = 1;//kisi var
-//            }
-//        }
-//        if (cnt == 0) {//kisi yoksa
-//            messageArr.add(lbl_person.getText());
-//            messageArr.add(sendmsg);
-//            txtArea_chat.setText(sendmsg);
-//        }
+        txt_roomMessage.setText("Enter message here...");
+        txt_roomMessage.setForeground(Color.gray);
     }//GEN-LAST:event_btn_roomSendActionPerformed
+
+    private void txt_roomMessageMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txt_roomMessageMousePressed
+        // TODO add your handling code here:
+        txt_roomMessage.setText("");
+        txt_roomMessage.setForeground(Color.black);
+    }//GEN-LAST:event_txt_roomMessageMousePressed
+
+    private void btn_createRoomMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_createRoomMouseEntered
+        if (txt_roomName.getText().isEmpty()) {
+            btn_createRoom.setEnabled(false);
+        }else{
+            btn_createRoom.setEnabled(true);
+        }
+    }//GEN-LAST:event_btn_createRoomMouseEntered
+
+    private void list_peopleValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_list_peopleValueChanged
+        // TODO add your handling code here:
+        btn_startChatting.setEnabled(true);
+    }//GEN-LAST:event_list_peopleValueChanged
+
+    private void list_roomsValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_list_roomsValueChanged
+        // TODO add your handling code here:
+        btn_joinRoom.setEnabled(true);
+    }//GEN-LAST:event_list_roomsValueChanged
 
     /**
      * @param args the command line arguments
@@ -498,7 +556,6 @@ public class chat extends javax.swing.JFrame {
     private javax.swing.JButton btn_startChatting;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
@@ -513,6 +570,7 @@ public class chat extends javax.swing.JFrame {
     private javax.swing.JPanel pnl_chat;
     private javax.swing.JPanel pnl_otherPeople;
     private javax.swing.JPanel pnl_people;
+    private javax.swing.JPanel pnl_roomChat;
     private javax.swing.JPanel pnl_rooms;
     private javax.swing.JTabbedPane tabbedPane_chat;
     public javax.swing.JTextArea txtArea_chat;
