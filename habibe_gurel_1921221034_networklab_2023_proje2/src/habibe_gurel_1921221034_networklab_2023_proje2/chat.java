@@ -15,8 +15,8 @@ import javax.swing.DefaultListModel;
 import javax.swing.JFileChooser;
 
 /**
- *
- * @author Habibe
+ * Project 2
+ * @author Habibe Gurel 1921221034
  */
 public class chat extends javax.swing.JFrame {
 
@@ -82,6 +82,11 @@ public class chat extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("CHAT APP");
         setResizable(false);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
 
         tabbedPane_chat.setForeground(new java.awt.Color(255, 255, 255));
 
@@ -96,15 +101,20 @@ public class chat extends javax.swing.JFrame {
 
         txtField_message.setFont(new java.awt.Font("Segoe UI", 0, 20)); // NOI18N
         txtField_message.setForeground(new java.awt.Color(153, 153, 153));
-        txtField_message.setText("Enter message here...");
         txtField_message.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 txtField_messageMousePressed(evt);
             }
         });
+        txtField_message.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtField_messageKeyReleased(evt);
+            }
+        });
 
         btn_send.setBackground(new java.awt.Color(0, 102, 153));
         btn_send.setIcon(new javax.swing.ImageIcon(getClass().getResource("/habibe_gurel_1921221034_networklab_2023_proje2/icons/Send.png"))); // NOI18N
+        btn_send.setEnabled(false);
         btn_send.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btn_sendActionPerformed(evt);
@@ -324,15 +334,20 @@ public class chat extends javax.swing.JFrame {
 
         txt_roomMessage.setFont(new java.awt.Font("Segoe UI", 0, 20)); // NOI18N
         txt_roomMessage.setForeground(new java.awt.Color(153, 153, 153));
-        txt_roomMessage.setText("Enter message here...");
         txt_roomMessage.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 txt_roomMessageMousePressed(evt);
             }
         });
+        txt_roomMessage.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txt_roomMessageKeyReleased(evt);
+            }
+        });
 
         btn_roomSend.setBackground(new java.awt.Color(0, 102, 153));
         btn_roomSend.setIcon(new javax.swing.ImageIcon(getClass().getResource("/habibe_gurel_1921221034_networklab_2023_proje2/icons/Send.png"))); // NOI18N
+        btn_roomSend.setEnabled(false);
         btn_roomSend.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btn_roomSendActionPerformed(evt);
@@ -406,37 +421,34 @@ public class chat extends javax.swing.JFrame {
     private void btn_documentsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_documentsActionPerformed
         JFileChooser j = new JFileChooser("C:");
         j.showSaveDialog(null);
-        File file = j.getSelectedFile();
-        System.out.println(file.getName());
-        
     }//GEN-LAST:event_btn_documentsActionPerformed
 
     private void btn_joinRoomActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_joinRoomActionPerformed
-        tabbedPane_chat.setSelectedIndex(3);
-        lbl_roomsName.setText(list_rooms.getSelectedValue());
+        tabbedPane_chat.setSelectedIndex(3);//chat sayfasina doner
+        lbl_roomsName.setText(list_rooms.getSelectedValue());//room adini alir label ismini gunceller
         txtArea_roomMessages.setText("");
-        Message msg = new Message(Message.Message_Type.GetRoomMessage);
-        msg.content = lbl_roomsName.getText();
+        Message msg = new Message(Message.Message_Type.GetRoomMessage);//onceki mesajlari da alabilmek için GetRoomMessage tipinde mesaj olusturuyorum
+        msg.content = lbl_roomsName.getText();//bulundugum odanin adini mesaj olarak servera yolluyorum
         Client.Send(msg);
     }//GEN-LAST:event_btn_joinRoomActionPerformed
 
     private void btn_createRoomActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_createRoomActionPerformed
         // TODO add your handling code here:
         String roomName = txt_roomName.getText();
-        roomListModel.addElement(roomName);
-        Message msg = new Message(Message.Message_Type.CreateRoom);
-        msg.content = roomName;
-        Client.Send(msg);
+        roomListModel.addElement(roomName);//yeni olusturulan room listeye eklenir
+        Message msg = new Message(Message.Message_Type.CreateRoom);//CreateRoom tipinde mesaj olusturulur
+        msg.content = roomName;//mesaj icerigi room ismi
+        Client.Send(msg);//servera mesaj gonderilir
     }//GEN-LAST:event_btn_createRoomActionPerformed
 
     private void btn_startChattingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_startChattingActionPerformed
         // TODO add your handling code here:
-        lbl_person.setText(list_people.getSelectedValue());
-        tabbedPane_chat.setSelectedIndex(0);
+        lbl_person.setText(list_people.getSelectedValue());//secilen kisiyle mesajlasma baslatilir
+        tabbedPane_chat.setSelectedIndex(0);//chat sayfasina gidilir
         txtArea_chat.setText("");
         for (int i = 0; i < messageArr.size(); i++) {
-            if (i % 2 == 0 && messageArr.get(i).equals(lbl_person.getText())) {
-                txtArea_chat.setText(messageArr.get(i + 1));
+            if (i % 2 == 0 && messageArr.get(i).equals(lbl_person.getText())) {//ilk indexte kisi tutuyorum
+                txtArea_chat.setText(messageArr.get(i + 1));//i+1. indexte mesaj tutuyorum
             }
         }
     }//GEN-LAST:event_btn_startChattingActionPerformed
@@ -466,8 +478,8 @@ public class chat extends javax.swing.JFrame {
             messageArr.add(sendmsg);
             txtArea_chat.setText(sendmsg);
         }
-        txtField_message.setText("Enter message here...");
-        txtField_message.setForeground(Color.gray);
+        txtField_message.setText("");
+        btn_send.setEnabled(false);
     }//GEN-LAST:event_btn_sendActionPerformed
 
     private void btn_roomDocumentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_roomDocumentActionPerformed
@@ -483,8 +495,8 @@ public class chat extends javax.swing.JFrame {
         Message msg2 = new Message(Message.Message_Type.SendRoomMessage);
         msg2.content = sendmsg;
         Client.Send(msg2);
-        txt_roomMessage.setText("Enter message here...");
-        txt_roomMessage.setForeground(Color.gray);
+        txt_roomMessage.setText("");
+        btn_roomSend.setEnabled(false);
     }//GEN-LAST:event_btn_roomSendActionPerformed
 
     private void txt_roomMessageMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txt_roomMessageMousePressed
@@ -496,7 +508,7 @@ public class chat extends javax.swing.JFrame {
     private void btn_createRoomMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_createRoomMouseEntered
         if (txt_roomName.getText().isEmpty()) {
             btn_createRoom.setEnabled(false);
-        }else{
+        } else {
             btn_createRoom.setEnabled(true);
         }
     }//GEN-LAST:event_btn_createRoomMouseEntered
@@ -510,6 +522,31 @@ public class chat extends javax.swing.JFrame {
         // TODO add your handling code here:
         btn_joinRoom.setEnabled(true);
     }//GEN-LAST:event_list_roomsValueChanged
+
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        Message msg = new Message(Message.Message_Type.Bitis);//bitis tipinde mesaj olusturuyorum
+        msg.content = lbl_myname.getText();
+        Client.Send(msg);//Servera kapatan clientin adini yollar
+        Client.Stop();//clienti durdurur
+    }//GEN-LAST:event_formWindowClosing
+
+    private void txt_roomMessageKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_roomMessageKeyReleased
+        // TODO add your handling code here:
+         if(txt_roomMessage.getText().isEmpty()){
+            btn_roomSend.setEnabled(false);
+        }else{
+            btn_roomSend.setEnabled(true);
+        }
+    }//GEN-LAST:event_txt_roomMessageKeyReleased
+
+    private void txtField_messageKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtField_messageKeyReleased
+        // TODO add your handling code here:
+         if(txtField_message.getText().isEmpty()){
+            btn_send.setEnabled(false);
+        }else{
+            btn_send.setEnabled(true);
+        }
+    }//GEN-LAST:event_txtField_messageKeyReleased
 
     /**
      * @param args the command line arguments

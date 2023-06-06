@@ -5,12 +5,12 @@
 package Server;
 
 /**
- *
- * @author Habibe
+ * Project 2
+ * @author Habibe Gurel 1921221034
  */
 public class ServerMain {
      public static void main(String[] args) {
         // TODO code application logic here
-        Server.Start(2000);
+        Server.Start(5000);
     }
 }

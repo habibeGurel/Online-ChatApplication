@@ -5,15 +5,12 @@
 package Server;
 
 /**
- *
- * @author Habibe
+ * Project 2
+ * @author Habibe Gurel 1921221034
  */
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 import Message.Message;
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -56,7 +53,7 @@ public class SClient {
 
     }
 
-    //client mesaj gönderme
+    //client mesaj gonderme
     public void Send(Message message) {
         try {
             this.sOutput.writeObject(message);
@@ -76,12 +73,12 @@ public class SClient {
     }
 
     //client dinleme threadi
-    //her clientin ayrı bir dinleme thredi var
+    //her clientin ayri bir dinleme threadi vardir
     class Listen extends Thread {
 
         SClient TheClient;
 
-        //thread nesne alması için yapıcı metod
+        //thread nesne almasi için yapici metod
         Listen(SClient TheClient) {
             this.TheClient = TheClient;
         }
@@ -100,7 +97,7 @@ public class SClient {
                             // isim verisini gönderdikten sonra eşleştirme işlemine başla
                             for (int i = 0; i < Server.Clients.size(); i++) {
                                 if (Server.Clients.get(i) != TheClient) {
-                                    Server.Send(Server.Clients.get(i), received);
+                                    Server.Send(Server.Clients.get(i), received);//listeye ekler
                                 }
                             }
                             break;
@@ -112,22 +109,22 @@ public class SClient {
                                     Server.Send(TheClient, msg);
                                 }
                             }
-                            for (int i = 0; i < Server.RoomList.size(); i++) {
+                            for (int i = 0; i < Server.RoomList.size(); i++) {//kensinden onceki roomlari room listesinde gosterecek
                                 Message msg = new Message(Message.Message_Type.GetRooms);
                                 msg.content = Server.RoomList.get(i);
                                 Server.Send(TheClient, msg);
                             }
                             break;
-                        case CreateRoom:
+                        case CreateRoom://oda olusturacak
                             for (int i = 0; i < Server.Clients.size(); i++) {
                                 if (Server.Clients.get(i) != TheClient) {
-                                    Server.Send(Server.Clients.get(i), received);
+                                    Server.Send(Server.Clients.get(i), received);//kendisi haric tum clientlere olusturulan odanin adi yollanir
                                 }
                             }
                             Server.RoomList.add(received.content.toString());
-                            Server.RoomList.add("");//mesaj
+                            Server.RoomList.add("");//ilk bos mesaj atamasi
                             break;
-                        case SendMessage:
+                        case SendMessage://diger clienta mesaj gonderme islemi
                             if (control == 1) {//ismi yolla
                                 String currentName = received.content.toString();
                                 FindClient(currentName); //receiver
@@ -139,23 +136,22 @@ public class SClient {
                                 control = 1;
                             }
                             break;
-                        case SendRoomMessage:
-                            if (control2 == 1) {//ismi yolla
+                        case SendRoomMessage://odada konusulan mesajları tum clientlara gonderme
+                            if (control2 == 1) {//room adi yolla
                                 String currentRoomName = received.content.toString();
                                 control2 = 2;
                             } else if (control2 == 2) {//mesaji yolla
-                                int CurrentRoomIndex =0;
                                 for (int i = 0; i < Server.RoomList.size(); i++) {
                                     if (i % 2 == 0 && Server.RoomList.get(i).equals(availableRoom)) {
-                                        CurrentRoomIndex = i;
-                                        String msgRoom = received.content.toString();
-                                        String oldChat = Server.RoomList.get(i+1);
-                                        oldChat += msgRoom;
-                                        Server.RoomList.set(i+1, oldChat);
+                                        String msgRoom = received.content.toString();//yeni mesaj
+                                        String oldChat = Server.RoomList.get(i+1);//onceki room chatte bulunan mesaj
+                                        oldChat += msgRoom;//onceki mesajin ustune yeni mesaj eklenir
+                                        Server.RoomList.set(i+1, oldChat);//room listte mesaj guncellenir
                                         Message msg = new Message(Message.Message_Type.SendRoomMessage);
                                         msg.content = Server.RoomList.get(i + 1);
+                                        //roomda bulunan kisilere room chatinde mesajlari yollar
                                         for (int j = 0; j < Server.Clients.size(); j++) {
-                                            if(Server.Clients.get(j).availableRoom.equals(availableRoom)){//?
+                                            if(Server.Clients.get(j).availableRoom.equals(availableRoom)){
                                                 Server.Send(Server.Clients.get(j), msg);
                                             }
                                         }
@@ -177,14 +173,28 @@ public class SClient {
                             }
                             break;
                         case Bitis:
+                            for (int i = 0; i < Server.Clients.size(); i++) {
+                                if(Server.Clients.get(i) != TheClient){
+                                    Server.Send(Server.Clients.get(i), received);//clientlere kapatan kisinin adi yollanir
+                                }
+                            }
+                            for (int i = 0; i < Server.Clients.size(); i++) {
+                                if(Server.Clients.get(i) == TheClient){//eger kapatan kisiyse Clients arrayinden sil
+                                   Server.Clients.remove(i);
+                                }
+                            }
                             break;
                     }
-
-                } catch (IOException ex) {
+                } 
+                catch (EOFException ex) {
+                    // Handle end of stream gracefully (e.g., close the connection)
+                    break;
+                }
+                catch (IOException ex) {
+                    
                     Logger.getLogger(SClient.class.getName()).log(Level.SEVERE, null, ex);
                     //client bağlantısı koparsa listeden sil
                     Server.Clients.remove(TheClient);
-
                 } catch (ClassNotFoundException ex) {
                     Logger.getLogger(SClient.class.getName()).log(Level.SEVERE, null, ex);
                     //client bağlantısı koparsa listeden sil

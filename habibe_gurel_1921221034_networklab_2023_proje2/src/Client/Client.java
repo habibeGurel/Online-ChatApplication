@@ -5,14 +5,10 @@
 package Client;
 
 /**
- *
- * @author Habibe
+ * Project 2
+ * @author Habibe Gurel 1921221034
  */
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 import Message.Message;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -98,16 +94,19 @@ class Listen extends Thread {
                         break;
                     case SendRoomMessage:
                         String msg3 = received.content.toString();
-                        chat.mychat.txtArea_roomMessages.setText(msg3);
+                        chat.mychat.txtArea_roomMessages.setText(msg3);//gelen mesaji txt areaya atar
                         break;
                     case GetRoomMessage:
                         String message = received.content.toString();
                         chat.mychat.txtArea_roomMessages.setText(message);
-                        
                         break;
                     case Bitis:
+                        for (int i = 0; i < chat.mychat.peopleListModel.size(); i++) {
+                            if(chat.mychat.peopleListModel.get(i).equals(received.content.toString())){
+                                chat.mychat.peopleListModel.remove(i);
+                            }
+                        }
                         break;
-                    
                 }
                 
             } catch (IOException ex) {
@@ -121,21 +120,15 @@ class Listen extends Thread {
                 break;
             }
         }
-        
     }
 }
 
 public class Client {
 
-    //her clientın bir soketi olmalı
-    public static Socket socket;
-
-    //verileri almak için gerekli nesne
-    public static ObjectInputStream sInput;
-    //verileri göndermek için gerekli nesne
-    public static ObjectOutputStream sOutput;
-    //serverı dinleme thredi 
-    public static Listen listenMe;
+    public static Socket socket;//her clientin bir socketi olacak
+    public static ObjectInputStream sInput;//veri alacak nesne
+    public static ObjectOutputStream sOutput;//veri gonderecek nesne
+    public static Listen listenMe;//serveri dinleyen listen thread
     
     public static void Start(String ip, int port) {
         try {
@@ -149,10 +142,9 @@ public class Client {
             Client.listenMe = new Listen();
             Client.listenMe.start();
 
-            //ilk mesaj olarak isim gönderiyorum
-            Message msg = new Message(Message.Message_Type.Name);
+            Message msg = new Message(Message.Message_Type.Name);//ilk mesaj isim
             msg.content = Login.user.txt_username.getText();//Sclient name e geldi
-            Client.Send(msg);//servera yolluyo
+            Client.Send(msg);//servera yollar
         } catch (IOException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -176,9 +168,7 @@ public class Client {
     }
     
     public static void Display(String msg) {
-        
         System.out.println(msg);
-        
     }
 
     //mesaj gönderme fonksiyonu

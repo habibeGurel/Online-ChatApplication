@@ -5,8 +5,8 @@
 package Message;
 
 /**
- *
- * @author Habibe
+ * Project 2
+ * @author Habibe Gurel 1921221034
  */
 public class Message implements java.io.Serializable {
     public static enum Message_Type {None, Name, Connect, CreateRoom,RivalConnected, SendMessage,SendRoomMessage,GetRoomMessage, Bitis,Start,GetRooms,}

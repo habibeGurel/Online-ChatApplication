@@ -5,8 +5,8 @@
 package Server;
 
 /**
- *
- * @author Habibe
+ * Project 2
+ * @author Habibe Gurel 1921221034
  */
 
 /*

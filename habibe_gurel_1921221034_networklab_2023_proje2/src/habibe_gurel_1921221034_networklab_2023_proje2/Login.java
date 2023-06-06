@@ -8,8 +8,8 @@ import Client.Client;
 import Message.Message;
 
 /**
- *
- * @author Habibe
+ * Project 2
+ * @author Habibe Gurel 1921221034
  */
 public class Login extends javax.swing.JFrame {
 
@@ -122,7 +122,7 @@ public class Login extends javax.swing.JFrame {
         // TODO add your handling code here:
         chat.name = txt_username.getText();
         if (txt_username.getText().length() != 0) {//bos degilse baslat
-            Client.Start("localHost", 2000);
+            Client.Start("localHost", 5000);//16.16.253.143 aws ip
             chat chatScreen = new chat();
             chatScreen.show();
             chat.mychat.lbl_myname.setText(txt_username.getText());
